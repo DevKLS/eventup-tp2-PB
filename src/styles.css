@@ -1,11 +1,11 @@
-/* Remove margens e espaçamentos padrão de todos os elementos */
+/* RESET */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* Variáveis de cores e sombras usadas no site */
+/* VARIÁVEIS */
 :root {
   --bg: #0f172a;
   --bg-soft: #1e293b;
@@ -22,12 +22,11 @@
   --shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
 }
 
-/* Deixa a rolagem da página mais suave */
+/* GLOBAL */
 html {
   scroll-behavior: smooth;
 }
 
-/* Estilo geral do corpo da página */
 body {
   font-family: Arial, Helvetica, sans-serif;
   background: var(--bg);
@@ -35,13 +34,11 @@ body {
   line-height: 1.5;
 }
 
-/* Remove sublinhado dos links e mantém a cor padrão */
 a {
   text-decoration: none;
   color: inherit;
 }
 
-/* Faz botões, inputs e selects herdarem a fonte do site */
 button,
 input,
 textarea,
@@ -49,13 +46,13 @@ select {
   font: inherit;
 }
 
-/* Define largura máxima do conteúdo e centraliza */
+/* CONTAINER */
 .container {
   width: min(100% - 2rem, 1120px);
   margin: 0 auto;
 }
 
-/* Cabeçalho fixo no topo */
+/* HEADER */
 .header {
   position: sticky;
   top: 0;
@@ -63,25 +60,26 @@ select {
   background: rgba(15, 23, 42, 0.95);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--border);
+  padding: 0 0.5rem;
 }
 
-/* Organiza logo e menu no cabeçalho */
 .header-content {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  width: 100%;
   padding: 1rem 0;
 }
 
-/* Estilo do nome/logo */
 .logo {
   font-size: 1.4rem;
   font-weight: bold;
-  color: #fff;
-  letter-spacing: 0.5px;
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-/* Botão do menu mobile */
 .menu-toggle {
   background: transparent;
   border: none;
@@ -90,7 +88,7 @@ select {
   cursor: pointer;
 }
 
-/* Menu escondido no mobile por padrão */
+/* NAV */
 .nav {
   display: none;
   position: absolute;
@@ -102,25 +100,38 @@ select {
   padding: 1rem;
   gap: 1rem;
   border-bottom: 1px solid var(--border);
+  z-index: 999;
 }
 
-/* Classe usada para mostrar o menu mobile */
 .nav-open {
   display: flex;
 }
 
-/* Links do menu */
 .nav a {
   color: var(--muted);
   transition: 0.3s;
 }
 
-/* Cor dos links ao passar o mouse */
 .nav a:hover {
   color: #fff;
 }
 
-/* Seção principal do hero */
+/* DESKTOP */
+@media (min-width: 768px) {
+  .nav {
+    display: flex;
+    position: static;
+    flex-direction: row;
+    align-items: center;
+    gap: 2rem;
+    background: transparent;
+    width: auto;
+
+    margin-left: auto;
+  }
+}
+
+/* HERO */
 .hero {
   padding: 4rem 0 3rem;
   background:
@@ -136,198 +147,211 @@ select {
     );
 }
 
-/* Organiza os elementos do hero */
 .hero-content {
   display: grid;
   gap: 1.5rem;
 }
 
-/* Texto pequeno acima do título */
+.hero h2 {
+  font-size: 2rem;
+}
 .hero-tag {
   color: var(--secondary);
   font-weight: bold;
   margin-bottom: 0.75rem;
   font-size: 0.95rem;
   text-transform: uppercase;
-  letter-spacing: 1px;
 }
 
-/* Título principal do hero */
-.hero h2 {
-  font-size: 2rem;
-  line-height: 1.2;
-  margin-bottom: 1rem;
-}
-
-/* Texto complementar do hero */
 .hero-text {
   color: var(--muted);
   margin-bottom: 1.5rem;
   max-width: 580px;
 }
-
-/* Organiza os botões do hero */
 .hero-actions {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: flex-start;
 }
-
-/* Estilo base do card do hero, dos cards em geral e do formulário */
-.hero-card,
+.hero-actions .btn {
+  flex: 1;
+  text-align: center;
+}
+/* CARDS */
 .card,
 .contact-form {
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: 18px;
   box-shadow: var(--shadow);
+  padding: 1.25rem;
+  transition: 0.3s;
 }
 
-/* Espaçamento interno do card do hero */
-.hero-card {
-  padding: 1.5rem;
+.card:hover {
+  transform: translateY(-6px);
+  border-color: var(--primary);
 }
 
-/* Título do card do hero */
-.hero-card h3 {
-  margin-bottom: 1rem;
-  color: #fff;
+/* EVENT CARD */
+.event-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 1.25rem;
+  box-shadow: var(--shadow);
+  transition: 0.3s;
 }
 
-/* Lista dentro do card do hero */
-.hero-card ul {
-  padding-left: 1rem;
-  color: var(--muted);
+.event-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--primary);
 }
 
-/* Espaço entre os itens da lista */
-.hero-card li + li {
-  margin-top: 0.6rem;
+/* AÇÕES */
+.event-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
 }
 
-/* Espaçamento padrão entre seções */
+/* BOTÕES */
+.btn {
+  display: inline-block;
+  border-radius: 12px;
+  padding: 0.9rem 1.2rem;
+  cursor: pointer;
+  font-weight: bold;
+  transition:
+    transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+    background 0.3s,
+    box-shadow 0.3s;
+  text-align: center;
+  text-decoration: none;
+  border: none; /* Reset padrão */
+}
+
+.btn-primary:hover,
+.btn-secondary:hover {
+  transform: scale(1.05);
+}
+
+/* O BOTÃO SECUNDÁRIO */
+.btn-secondary {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--secondary) !important;
+}
+
+.btn-secondary:hover {
+  background: transparent;
+  box-shadow: 0 0 15px rgba(236, 72, 153, 0.4);
+}
+
+/* O BOTÃO PRIMARY (Ver eventos)*/
+.btn-primary {
+  background: var(--primary);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: var(--primary-dark);
+}
+
+/*BOTÕES DOS EVENTOS*/
+/*BOTÕES DO HERO (Primary e Secondary)*/
+
+.btn-primary,
+.btn-secondary {
+  display: inline-block;
+  border-radius: 12px;
+  padding: 0.9rem 1.2rem;
+  cursor: pointer;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+  border: none;
+  transition:
+    transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+    background 0.3s;
+}
+
+.btn-primary:hover,
+.btn-secondary:hover {
+  transform: scale(1.08);
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  color: white;
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--secondary) !important;
+}
+
+/*BOTÕES DOS CARDS */
+
+.btn-detalhes {
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.3s;
+}
+
+.btn-detalhes:hover {
+  background-color: var(--primary-dark);
+}
+
+.btn-excluir {
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.3s;
+}
+
+.btn-excluir:hover {
+  background-color: #dc2626;
+}
+
+/* SECTION */
 .section {
   padding: 3.5rem 0;
 }
 
-/* Fundo alternativo para algumas seções */
 .alt-bg {
   background: rgba(255, 255, 255, 0.02);
 }
 
-/* Área do título das seções */
-.section-title {
-  margin-bottom: 2rem;
-}
-
-/* Texto pequeno acima do título da seção */
-.section-title span {
-  display: inline-block;
-  color: var(--secondary);
-  font-weight: bold;
-  margin-bottom: 0.5rem;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  font-size: 0.9rem;
-}
-
-/* Título principal da seção */
-.section-title h2 {
-  font-size: 1.8rem;
-  margin-bottom: 0.75rem;
-}
-
-/* Texto da seção */
-.section-title p {
-  color: var(--muted);
-  max-width: 700px;
-}
-
-/* Grid usado nos cards e estatísticas */
+/* GRID */
 .grid,
 .stats-grid {
   display: grid;
   gap: 1rem;
 }
 
-/* Estilo padrão dos cards */
-.card {
-  padding: 1.25rem;
-  transition:
-    transform 0.3s ease,
-    box-shadow 0.3s ease,
-    border-color 0.3s ease;
-}
-
-/* Efeito ao passar o mouse no card */
-.card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
-  border-color: rgba(249, 115, 22, 0.35);
-}
-
-/* Ícone dos cards de funcionalidade */
-.feature-icon {
-  font-size: 2rem;
-  margin-bottom: 0.75rem;
-}
-
-/* Espaço abaixo dos títulos dos cards */
-.feature-card h3,
-.post-card h3,
-.stat-card h3 {
-  margin-bottom: 0.5rem;
-}
-
-/* Cor dos textos dos cards */
-.feature-card p,
-.post-card p,
-.stat-card p {
-  color: var(--muted);
-}
-
-/* Linha superior do card de evento */
-.post-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 0.75rem;
-}
-
-/* Estilo da categoria do evento */
-.post-category {
-  background: rgba(249, 115, 22, 0.2);
-  color: #fdba74;
-  padding: 0.35rem 0.7rem;
-  border-radius: 999px;
-  font-size: 0.85rem;
-  font-weight: 600;
-}
-
-/* Texto da localização ou informação lateral */
-.post-likes {
-  font-size: 0.9rem;
-  color: var(--muted);
-}
-
-/* Espaço entre parágrafos do card de evento */
-.post-card p {
-  margin-bottom: 0.7rem;
-}
-
-/* Centraliza o conteúdo das estatísticas */
+/* STATS */
 .stat-card {
   text-align: center;
 }
 
-/* Tamanho do número das estatísticas */
 .stat-card h3 {
   font-size: 1.9rem;
-  color: #fff;
 }
 
-/* Área do filtro */
+/* FILTER */
 .filter-bar {
   display: flex;
   flex-direction: column;
@@ -335,149 +359,67 @@ select {
   margin-bottom: 1.5rem;
 }
 
-/* Texto do label do filtro */
-.filter-bar label {
-  color: var(--muted);
-  font-weight: 600;
+/* FORM */
+.contact-wrapper {
+  max-width: 720px;
+  margin: 0 auto;
 }
 
-/* Estilo do select, inputs e textarea */
-.filter-bar select,
-input,
-textarea {
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.contact-form input,
+.contact-form textarea,
+.filter-bar select {
   width: 100%;
-  padding: 0.9rem 1rem;
+  padding: 0.9rem;
   border-radius: 12px;
   border: 1px solid var(--border);
   background: #0b1220;
   color: #fff;
-  outline: none;
-  transition:
-    border-color 0.3s ease,
-    box-shadow 0.3s ease;
+  transition: 0.3s;
 }
 
-/* Efeito quando o campo está selecionado */
-.filter-bar select:focus,
-input:focus,
-textarea:focus {
-  border-color: rgba(249, 115, 22, 0.6);
-  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.15);
+.contact-form input:hover {
+  border-color: var(--primary);
 }
 
-/* Limita a largura da área do formulário */
-.contact-wrapper {
-  max-width: 720px;
+.contact-form input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2);
 }
 
-/* Espaçamento interno do formulário */
-.contact-form {
-  padding: 1.5rem;
-}
-
-/* Organiza cada grupo do formulário */
-.form-group {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 1rem;
-}
-
-/* Espaço abaixo do label */
-.form-group label {
-  margin-bottom: 0.45rem;
-  font-weight: 600;
-}
-
-/* Mensagem mostrada após ação do formulário */
-.form-message {
-  margin-top: 1rem;
-  padding: 0.9rem 1rem;
-  border-radius: 12px;
-  font-weight: bold;
-}
-
-/* Mensagem de sucesso */
-.form-message.success {
-  background: rgba(34, 197, 94, 0.15);
-  color: #86efac;
-}
-
-/* Mensagem de erro */
-.form-message.error {
-  background: rgba(239, 68, 68, 0.15);
-  color: #fca5a5;
-}
-
-/* Estilo base dos botões */
-.btn {
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  border: none;
-  border-radius: 12px;
-  padding: 0.9rem 1.2rem;
-  cursor: pointer;
-  font-weight: bold;
-  transition: 0.3s ease;
-}
-
-/* Botão principal */
-.btn-primary {
-  background: var(--primary);
-  color: white;
-  box-shadow: 0 8px 20px rgba(249, 115, 22, 0.3);
-}
-
-/* Efeito do botão principal ao passar o mouse */
-.btn-primary:hover {
-  background: var(--primary-dark);
-  transform: translateY(-2px);
-}
-
-/* Botão secundário */
-.btn-secondary {
-  background: transparent;
-  border: 1px solid var(--border);
-  color: white;
-}
-
-/* Efeito do botão secundário ao passar o mouse */
-.btn-secondary:hover {
-  border-color: rgba(236, 72, 153, 0.5);
-  color: #fff;
-  transform: translateY(-2px);
-}
-
-/* Botão menor dos cards */
-.btn-small {
-  margin-top: 1rem;
-  background: rgba(255, 255, 255, 0.08);
-  color: white;
-}
-
-/* Efeito do botão menor */
-.btn-small:hover {
-  background: rgba(255, 255, 255, 0.15);
-}
-
-/* Faz o botão ocupar toda a largura */
 .full-width {
   width: 100%;
+  margin-top: 10px;
 }
 
-/* Rodapé da página */
-.footer {
-  padding: 1.5rem 0;
-  text-align: center;
-  border-top: 1px solid var(--border);
+/* DETAILS */
+.details-container {
+  padding: 2rem;
+  display: flex;
+  justify-content: center;
 }
 
-/* Texto do rodapé */
-.footer p {
-  color: var(--muted);
+.details-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 2rem;
+  max-width: 600px;
+  width: 100%;
+  box-shadow: var(--shadow);
 }
 
-/* Ajustes para tablets e telas médias */
+/* RESPONSIVO */
 @media (min-width: 768px) {
   .menu-toggle {
     display: none;
@@ -486,29 +428,14 @@ textarea:focus {
   .nav {
     display: flex;
     position: static;
-    width: auto;
     background: transparent;
     flex-direction: row;
-    border: none;
-    padding: 0;
     gap: 1.5rem;
-  }
-
-  .hero {
-    padding: 5rem 0 4rem;
+    align-items: center;
   }
 
   .hero-content {
     grid-template-columns: 1.2fr 0.8fr;
-    align-items: center;
-  }
-
-  .hero h2 {
-    font-size: 3rem;
-  }
-
-  .hero-actions {
-    flex-direction: row;
   }
 
   .grid {
@@ -517,11 +444,9 @@ textarea:focus {
 
   .stats-grid {
     grid-template-columns: repeat(4, 1fr);
-    margin-bottom: 1.5rem;
   }
 }
 
-/* Ajustes para telas maiores */
 @media (min-width: 1024px) {
   .grid {
     grid-template-columns: repeat(3, 1fr);
