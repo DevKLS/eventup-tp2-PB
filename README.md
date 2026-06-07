@@ -1,16 +1,20 @@
-# React + Vite
+# EventUp - Sistema de Gerenciamento de Eventos
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Projeto desenvolvido para o Projeto de Bloco. Sistema focado em gestão de eventos com autenticação, segurança de dados e interface responsiva (Mobile-First).
 
-Currently, two official plugins are available:
+## Tecnologias
+- **Frontend:** React 19, Vite, React Router DOM
+- **Backend/DB:** Supabase (Auth + RLS)
+- **Testes:** Vitest, React Testing Library
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Como rodar o projeto
+1. Clone o repositório.
+2. Instale as dependências: `npm install`
+3. Inicie o ambiente de desenvolvimento: `npm run dev`
 
-## React Compiler
+## Testes
+Para executar a suíte de testes unitários:
+`npm test`
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Segurança
+O projeto utiliza **Row Level Security (RLS)** no Supabase, garantindo que usuários possam editar ou excluir apenas os eventos criados por eles mesmos (`organizador_id`).

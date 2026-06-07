@@ -1,64 +1,98 @@
 import { useParams, Link } from "react-router-dom";
-import { events } from "../data/data";
+import { useState, useEffect } from "react";
 import Header from "../components/Header";
-import { useState } from "react"; 
+import { supabase } from "../supabaseClient";
 
 function DetalhesEvento() {
   const { id } = useParams();
-  const [confirmado, setConfirmado] = useState(false); 
+  const [evento, setEvento] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [confirmado, setConfirmado] = useState(false);
+  const [feedback, setFeedback] = useState("");
 
-  const evento = events.find((e) => e.id === Number(id));
+  useEffect(() => {
+    async function fetchEvento() {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('eventos')
+        .select('*')
+        .eq('id', id)
+        .single();
 
-  if (!evento) {
-    return (
-      <>
-        <Header />
-        <p style={{ padding: "100px 20px", textAlign: "center" }}>Evento não encontrado</p>
-      </>
-    );
-  }
+      if (error) console.error("Erro ao buscar:", error);
+      else setEvento(data);
+      setLoading(false);
+    }
+    fetchEvento();
+  }, [id]);
+
+  // Função de clique integrada
+  const handleConfirmar = () => {
+    setConfirmado(!confirmado);
+    setFeedback(!confirmado ? "Presença confirmada com sucesso!" : "Presença removida.");
+    setTimeout(() => setFeedback(""), 3000);
+  };
+
+  if (loading) return <p style={{ textAlign: "center", marginTop: "50px" }}>Carregando...</p>;
+  if (!evento) return <p style={{ textAlign: "center", marginTop: "50px" }}>Evento não encontrado.</p>;
 
   return (
     <>
-      <Header /> 
-      
-      <div className="details-container" style={{ paddingTop: "80px" }}>
-        <div className="container">
-           {/* ✅ Botão de voltar para facilitar a navegação mobile-first */}
-          <Link to="/" style={{ textDecoration: 'none', color: 'var(--primary-color)', fontWeight: 'bold' }}>
-            ← Voltar para a listagem
-          </Link>
-          
-          <div className="details-card" style={{ marginTop: '20px' }}>
+      <Header />
+      <div className="page-details-layout">
+        <div className="details-content-box">
+          <div className="details-card">
+            <Link to="/" className="back-link">← Voltar para a listagem</Link>
+            {evento.image && <img src={evento.image} alt={evento.title} className="details-image" />}
+            
             <h1>{evento.title}</h1>
-
             <span className="details-category">{evento.category}</span>
-
-            <p className="details-info">
-              📅 {evento.date}
-            </p>
-
-            <p className="details-info">
-              📍 {evento.location}
-            </p>
-
+            
+            <div style={{ margin: "20px 0" }}>
+              <p className="details-info">📅 {evento.date}</p>
+              <p className="details-info">📍 {evento.location}</p>
+            </div>
+            
             <div className="details-description">
-              <p>{evento.description}</p>
+              <p>{evento.description || "Nenhuma descrição disponível."}</p>
             </div>
 
-            
-            <div style={{ marginTop: '30px', borderTop: '1px solid #eee', paddingTop: '20px' }}>
-              <button 
-                className={`btn ${confirmado ? 'btn-secondary' : 'btn-primary'}`}
-                onClick={() => setConfirmado(!confirmado)}
+            <div className="action-area" style={{ marginTop: "30px", borderTop: "1px solid var(--border)", paddingTop: "20px" }}>
+              <button
+                onClick={handleConfirmar}
+                style={{
+                  background: confirmado
+                    ? "linear-gradient(90deg, rgba(0, 122, 255, 0.4) 0%, rgba(255, 122, 0, 0.4) 100%)"
+                    : "linear-gradient(90deg, #007aff 0%, #ff7a00 100%)",
+                  color: confirmado ? "rgba(255, 255, 255, 0.7)" : "white",
+                  padding: "14px 20px",
+                  border: confirmado ? "1px solid rgba(255, 255, 255, 0.2)" : "none",
+                  borderRadius: "8px",
+                  fontWeight: "bold",
+                  cursor: "pointer",
+                  width: "100%",
+                  fontSize: "16px",
+                  boxShadow: confirmado ? "0 0 15px rgba(0, 122, 255, 0.5)" : "var(--shadow)",
+                  transition: "all 0.4s ease",
+                }}
               >
                 {confirmado ? "✓ Presença Confirmada" : "Confirmar Presença"}
               </button>
-              
-              {confirmado && (
-                <p style={{ color: 'green', fontSize: '0.9rem', marginTop: '10px' }}>
-                  Você está na lista de participantes deste evento!
-                </p>
+
+              {/* Exibição do feedback */}
+              {feedback && (
+                <div style={{
+                  marginTop: "15px",
+                  padding: "10px",
+                  borderRadius: "8px",
+                  background: "rgba(255, 255, 255, 0.05)",
+                  border: "1px solid var(--primary)",
+                  color: "white",
+                  textAlign: "center",
+                  fontSize: "0.9rem"
+                }}>
+                  {feedback}
+                </div>
               )}
             </div>
           </div>

@@ -1,37 +1,54 @@
-/* RESET */
+/* ==========================================================================
+   1. RESET & CONFIGURAÇÕES GLOBAIS
+   ========================================================================== */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* VARIÁVEIS */
-:root {
-  --bg: #0f172a;
-  --bg-soft: #1e293b;
-  --card: #1a2333;
-  --text: #f8fafc;
-  --muted: #cbd5e1;
-
-  --primary: #f97316;
-  --primary-dark: #ea580c;
-  --secondary: #ec4899;
-  --accent: #8b5cf6;
-
-  --border: rgba(255, 255, 255, 0.08);
-  --shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
-}
-
-/* GLOBAL */
-html {
-  scroll-behavior: smooth;
+/* Garante que o root ocupe a altura total para o Footer ficar embaixo */
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 body {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   background: var(--bg);
   color: var(--text);
   line-height: 1.5;
+  /* Removemos o padding-top/bottom fixo do body porque o seu App.jsx 
+     agora gerencia o layout de forma flexível */
+}
+/* ==========================================================================
+   2. VARIÁVEIS DE IDENTIDADE VISUAL (EventUp - Azul & Laranja Premium)
+   ========================================================================== */
+:root {
+  --bg: #060b16;
+  --bg-soft: #0e1626;
+  --card: rgba(20, 30, 54, 0.5);
+  --text: #f9fafb;
+  --muted: #9ca3af;
+  --primary: #007aff;
+  --primary-dark: #0056b3;
+  --secondary: #ff7a00;
+  --accent: #ff9500;
+  --border: rgba(255, 255, 255, 0.06);
+  --border-glow: rgba(0, 122, 255, 0.4);
+  --shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+}
+
+body {
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+  padding-top: 60px !important;
+  padding-bottom: 65px !important;
 }
 
 a {
@@ -46,404 +63,241 @@ select {
   font: inherit;
 }
 
-/* CONTAINER */
 .container {
   width: min(100% - 2rem, 1120px);
   margin: 0 auto;
 }
 
-/* HEADER */
+/* ==========================================================================
+   3. HEADER (Topo do Site)
+   ========================================================================== */
 .header {
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  background: rgba(15, 23, 42, 0.95);
-  backdrop-filter: blur(10px);
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 60px !important;
+  z-index: 9999 !important;
+  background-color: #060b16 !important;
   border-bottom: 1px solid var(--border);
-  padding: 0 0.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
 .header-content {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  padding: 1rem 0;
+  display: flex !important;
+  justify-content: center !important; /* Centralizado no mobile */
+  align-items: center !important;
+  height: 100% !important;
+  width: 100% !important;
+  max-width: 1120px;
+  margin: 0 auto;
+
+  /* 🌟 CORREÇÃO: Adicionamos um padding de 1.5rem (24px) nas laterais */
+  /* Isso vai empurrar a logo um pouco para a direita, desencostando da borda */
+  padding: 0 1.5rem !important;
 }
 
 .logo {
-  font-size: 1.4rem;
-  font-weight: bold;
-  background: linear-gradient(90deg, var(--primary), var(--accent));
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  display: flex !important;
+  align-items: center !important;
+}
+
+.logo h1 {
+  font-size: 1.4rem !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.5px !important;
+  background: linear-gradient(
+    135deg,
+    var(--primary),
+    var(--secondary)
+  ) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  margin: 0 !important;
 }
 
 .menu-toggle {
-  background: transparent;
-  border: none;
-  color: #fff;
-  font-size: 1.6rem;
-  cursor: pointer;
+  display: none !important;
 }
 
-/* NAV */
+/* ==========================================================================
+   4. NAVBAR MODERNA (Mobile: Apenas Ícones Centralizados e Limpos)
+   ========================================================================== */
 .nav {
-  display: none;
-  position: absolute;
-  top: 70px;
-  left: 0;
-  width: 100%;
-  background: var(--bg-soft);
-  flex-direction: column;
-  padding: 1rem;
-  gap: 1rem;
-  border-bottom: 1px solid var(--border);
-  z-index: 999;
+  display: flex !important;
+  position: fixed !important;
+  bottom: 0 !important;
+  top: auto !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 56px !important; /* Altura padrão perfeita para tab-bars mobile */
+  background: #0e1626 !important;
+  border-top: 1px solid var(--border);
+  flex-direction: row !important;
+  justify-content: space-around !important;
+  align-items: center !important;
+  padding: 0 8px !important;
+  z-index: 9999 !important;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.6);
 }
 
-.nav-open {
-  display: flex;
+.nav-item,
+.logout-btn {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex: 1 !important;
+  height: 100% !important;
+  color: var(--muted) !important;
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
 }
 
-.nav a {
-  color: var(--muted);
-  transition: 0.3s;
+/* Ícones ligeiramente maiores e perfeitamente centralizados no mobile */
+.nav-item svg,
+.logout-btn svg {
+  font-size: 1.35rem !important;
+  width: 1.35rem !important;
+  height: 1.35rem !important;
+  margin-bottom: 0 !important;
+  flex-shrink: 0 !important;
+  transition: transform 0.2s ease;
 }
 
-.nav a:hover {
-  color: #fff;
+.nav-item:active svg {
+  transform: scale(0.9); /* Feedback de clique sutil no celular */
 }
 
-/* DESKTOP */
-@media (min-width: 768px) {
-  .nav {
-    display: flex;
-    position: static;
-    flex-direction: row;
-    align-items: center;
-    gap: 2rem;
-    background: transparent;
-    width: auto;
-
-    margin-left: auto;
-  }
+/* 🌟 CORREÇÃO: Sumir com o texto COMPLETAMENTE no mobile usando a classe certa */
+.nav-text {
+  display: none !important;
 }
 
-/* HERO */
+/* ==========================================================================
+   5. HERO SECTION
+   ========================================================================== */
 .hero {
-  padding: 4rem 0 3rem;
+  padding: 4rem 0;
   background:
     radial-gradient(
-      circle at top left,
-      rgba(249, 115, 22, 0.25),
+      circle at 10% 10%,
+      rgba(0, 122, 255, 0.15),
       transparent 50%
     ),
-    radial-gradient(
-      circle at bottom right,
-      rgba(236, 72, 153, 0.15),
-      transparent 50%
-    );
+    radial-gradient(circle at 90% 90%, rgba(255, 122, 0, 0.08), transparent 50%);
 }
 
 .hero-content {
   display: grid;
-  gap: 1.5rem;
+  gap: 1.25rem;
+}
+
+.hero-tag {
+  color: var(--secondary);
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
 }
 
 .hero h2 {
-  font-size: 2rem;
-}
-.hero-tag {
-  color: var(--secondary);
-  font-weight: bold;
-  margin-bottom: 0.75rem;
-  font-size: 0.95rem;
-  text-transform: uppercase;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 800;
+  line-height: 1.15;
 }
 
 .hero-text {
   color: var(--muted);
-  margin-bottom: 1.5rem;
-  max-width: 580px;
+  font-size: 1rem;
 }
+
 .hero-actions {
   display: flex;
-  flex-direction: row;
-  gap: 0.75rem;
+  gap: 0.85rem;
   flex-wrap: wrap;
-  justify-content: flex-start;
-}
-.hero-actions .btn {
-  flex: 1;
-  text-align: center;
-}
-/* CARDS */
-.card,
-.contact-form {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 18px;
-  box-shadow: var(--shadow);
-  padding: 1.25rem;
-  transition: 0.3s;
+  margin-top: 1rem;
 }
 
-.card:hover {
-  transform: translateY(-6px);
-  border-color: var(--primary);
-}
-
-/* EVENT CARD */
-.event-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 18px;
-  padding: 1.25rem;
-  box-shadow: var(--shadow);
-  transition: 0.3s;
-}
-
-.event-card:hover {
-  transform: translateY(-5px);
-  border-color: var(--primary);
-}
-
-/* AÇÕES */
-.event-actions {
-  display: flex;
-  gap: 10px;
-  margin-top: 10px;
-}
-
-/* BOTÕES */
+/* ==========================================================================
+   6. BOTÕES DE AÇÃO GLOBAIS
+   ========================================================================== */
 .btn {
-  display: inline-block;
-  border-radius: 12px;
-  padding: 0.9rem 1.2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 14px;
+  padding: 0.8rem 1.4rem;
   cursor: pointer;
-  font-weight: bold;
-  transition:
-    transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275),
-    background 0.3s,
-    box-shadow 0.3s;
-  text-align: center;
-  text-decoration: none;
-  border: none; /* Reset padrão */
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
 }
 
-.btn-primary:hover,
-.btn-secondary:hover {
-  transform: scale(1.05);
+.btn:active {
+  transform: scale(0.96);
 }
 
-/* O BOTÃO SECUNDÁRIO */
-.btn-secondary {
-  background: transparent;
-  color: var(--text);
-  border: 1px solid var(--secondary) !important;
-}
-
-.btn-secondary:hover {
-  background: transparent;
-  box-shadow: 0 0 15px rgba(236, 72, 153, 0.4);
-}
-
-/* O BOTÃO PRIMARY (Ver eventos)*/
 .btn-primary {
-  background: var(--primary);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
   color: white;
+  border-radius: 14px;
+  box-shadow:
+    0 4px 20px rgba(0, 122, 255, 0.2),
+    0 4px 20px rgba(255, 122, 0, 0.2);
+  transition:
+    transform 0.2s ease,
+    filter 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .btn-primary:hover {
-  background: var(--primary-dark);
+  filter: brightness(1.1);
+  transform: translateY(-2px);
+  box-shadow:
+    0 6px 24px rgba(0, 122, 255, 0.3),
+    0 6px 24px rgba(255, 122, 0, 0.3);
 }
 
-/*BOTÕES DOS EVENTOS*/
-/*BOTÕES DO HERO (Primary e Secondary)*/
-
-.btn-primary,
 .btn-secondary {
-  display: inline-block;
-  border-radius: 12px;
-  padding: 0.9rem 1.2rem;
-  cursor: pointer;
-  font-weight: bold;
-  text-align: center;
-  text-decoration: none;
-  border: none;
-  transition:
-    transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275),
-    background 0.3s;
+  background: rgba(255, 255, 255, 0.04);
+  color: white;
+  border: 1px solid var(--border);
 }
 
-.btn-primary:hover,
 .btn-secondary:hover {
-  transform: scale(1.08);
+  background: rgba(255, 255, 255, 0.08);
+}
+.profile-card label.btn-secondary {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  margin-top: 10px !important;
+  opacity: 1 !important;
+  visibility: visible !important;
 }
 
-.btn-primary {
-  background-color: var(--primary);
-  color: white;
-}
-
-.btn-secondary {
-  background: transparent;
-  color: var(--text);
-  border: 1px solid var(--secondary) !important;
-}
-
-/*BOTÕES DOS CARDS */
-
-.btn-detalhes {
-  background-color: var(--primary);
-  color: white;
-  border: none;
-  padding: 8px 14px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: background 0.3s;
-}
-
-.btn-detalhes:hover {
-  background-color: var(--primary-dark);
-}
-
-.btn-excluir {
-  background-color: #ef4444;
-  color: white;
-  border: none;
-  padding: 8px 14px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: background 0.3s;
-}
-
-.btn-excluir:hover {
-  background-color: #dc2626;
-}
-
-/* SECTION */
+/* ==========================================================================
+   7. SECTIONS & GRIDS (RESTRUTURADO PARA MOBILE-FIRST)
+   ========================================================================== */
 .section {
-  padding: 3.5rem 0;
+  padding: 4rem 0;
 }
 
-.alt-bg {
-  background: rgba(255, 255, 255, 0.02);
-}
-
-/* GRID */
-.grid,
-.stats-grid {
+/* Correção do Grid para ser estritamente responsivo */
+.grid {
   display: grid;
-  gap: 1rem;
-}
-
-/* STATS */
-.stat-card {
-  text-align: center;
-}
-
-.stat-card h3 {
-  font-size: 1.9rem;
-}
-
-/* FILTER */
-.filter-bar {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  margin-bottom: 1.5rem;
-}
-
-/* FORM */
-.contact-wrapper {
-  max-width: 720px;
-  margin: 0 auto;
-}
-
-.contact-form {
-  display: flex;
-  flex-direction: column;
-  gap: 0.8rem;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-}
-
-.contact-form input,
-.contact-form textarea,
-.filter-bar select {
+  grid-template-columns: 1fr; /* 1 coluna no mobile */
+  gap: 20px;
   width: 100%;
-  padding: 0.9rem;
-  border-radius: 12px;
-  border: 1px solid var(--border);
-  background: #0b1220;
-  color: #fff;
-  transition: 0.3s;
 }
 
-.contact-form input:hover {
-  border-color: var(--primary);
-}
-
-.contact-form input:focus {
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2);
-}
-
-.full-width {
-  width: 100%;
-  margin-top: 10px;
-}
-
-/* DETAILS */
-.details-container {
-  padding: 2rem;
-  display: flex;
-  justify-content: center;
-}
-
-.details-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 2rem;
-  max-width: 600px;
-  width: 100%;
-  box-shadow: var(--shadow);
-}
-
-/* RESPONSIVO */
-@media (min-width: 768px) {
-  .menu-toggle {
-    display: none;
-  }
-
-  .nav {
-    display: flex;
-    position: static;
-    background: transparent;
-    flex-direction: row;
-    gap: 1.5rem;
-    align-items: center;
-  }
-
-  .hero-content {
-    grid-template-columns: 1.2fr 0.8fr;
-  }
-
+@media (min-width: 600px) {
   .grid {
     grid-template-columns: repeat(2, 1fr);
-  }
-
-  .stats-grid {
-    grid-template-columns: repeat(4, 1fr);
   }
 }
 
@@ -451,4 +305,505 @@ select {
   .grid {
     grid-template-columns: repeat(3, 1fr);
   }
+}
+
+/* Garante que o card preencha a coluna sem vazar */
+.event-card {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* DESKTOP: Quando a tela for maior (ex: 768px), ele vira 2 ou 3 colunas */
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr); /* 2 colunas para tablets/PC */
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr); /* 3 colunas para telas grandes */
+  }
+}
+/* ==========================================================================
+   8. CARDS EM GLASSMORPHISM
+   ========================================================================== */
+.card,
+.feature-card,
+.stat-card,
+.event-card {
+  background: var(--card);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  box-shadow: var(--shadow);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card:hover,
+.feature-card:hover,
+.stat-card:hover,
+.event-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--border-glow);
+  box-shadow: 0 16px 36px rgba(0, 122, 255, 0.15);
+}
+
+.feature-card {
+  padding: 2rem 1.5rem;
+}
+
+.feature-card h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: #fff;
+}
+
+.feature-card p {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.stat-card {
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.stat-card h3 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 0.25rem;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.stat-card p {
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.event-card {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.event-image {
+  width: 100%;
+  height: 190px;
+  object-fit: cover;
+  border-radius: 18px;
+  margin-bottom: 1rem;
+}
+
+.event-card h3 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: #ffffff;
+}
+
+.event-card p {
+  font-size: 0.88rem;
+  color: var(--muted);
+  margin-bottom: 0.3rem;
+}
+
+.event-actions {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: auto;
+  padding-top: 1.25rem;
+}
+
+.btn-detalhes,
+.btn-excluir {
+  flex: 1;
+  border: none;
+  border-radius: 10px;
+  padding: 0.7rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-detalhes {
+  background: var(--primary);
+  color: white;
+}
+
+.btn-detalhes:hover {
+  background: var(--primary-dark);
+}
+
+.btn-excluir {
+  background: rgba(239, 68, 68, 0.1);
+  color: #f87171;
+}
+
+.btn-excluir:hover {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+}
+
+/* ==========================================================================
+   9. BARRA DE FILTROS (Simples e Minimalista)
+   ========================================================================== */
+.filter-bar {
+  margin-bottom: 2rem;
+  width: 100%;
+}
+
+.filter-bar select {
+  width: 100%;
+  max-width: 300px;
+  padding: 0.6rem 1rem;
+  border-radius: 8px; /* Menos arredondado, mais sóbrio */
+  border: 1px solid var(--border);
+  background-color: var(--bg-soft);
+  color: var(--text);
+  font-size: 0.95rem;
+  cursor: pointer;
+  /* Mantemos o padrão do sistema para ser mais leve */
+  appearance: auto;
+}
+
+.filter-bar select:focus {
+  outline: none;
+  border-color: var(--muted); /* Foco mais sutil */
+}
+
+/* ==========================================================================
+   10. FORMULÁRIO DE CRIAÇÃO DE EVENTOS (Versão Corrigida)
+   ========================================================================== */
+.contact-form {
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  width: 90%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.contact-form input,
+.contact-form textarea,
+.contact-form select {
+  width: 100%;
+  padding: 0.8rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: #060b16;
+  color: white;
+}
+
+/* Container de segurança para o CameraPicker */
+.camera-container-wrapper {
+  width: 100%;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+/* Botão principal (Substitui os estilos inline) */
+.btn-submit {
+  width: 100%;
+  padding: 1rem;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btn-submit:hover {
+  opacity: 0.9;
+}
+
+.form-message {
+  text-align: center;
+  font-size: 0.9rem;
+}
+.success {
+  color: #3ddc84;
+}
+.error {
+  color: #ef4444;
+}
+
+/* ==========================================================================
+   11. TELA DE AUTENTICAÇÃO (LOGIN / CADASTRO)
+   ========================================================================== */
+.auth-container {
+  min-height: calc(100vh - 120px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 2.5rem 2rem;
+  box-shadow: var(--shadow);
+}
+
+.auth-card h1 {
+  text-align: center;
+  font-size: 1.8rem;
+  font-weight: 800;
+  margin-bottom: 1.5rem;
+}
+
+.auth-card form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.auth-card input {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: rgba(6, 11, 22, 0.6);
+  color: white;
+}
+
+.auth-card input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.15);
+}
+
+.auth-card p {
+  text-align: center;
+  margin-top: 1.5rem;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.auth-card a {
+  color: var(--secondary);
+  font-weight: 700;
+}
+
+/* ==========================================================================
+   12. PÁGINA DE PERFIL & DETALHES DO EVENTO 
+   ========================================================================== */
+/* Remova o margin: 0 !important do card */
+.profile-card,
+.details-card {
+  max-width: 750px;
+  margin: 20px auto; /* Isso cria espaçamento automático e mantém centralizado */
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 1.5rem; /* Padding equilibrado para mobile */
+  box-shadow: var(--shadow);
+}
+
+.page-details-layout {
+  width: 100%;
+  min-height: 100vh;
+  padding: 80px 1rem 20px 1rem; /* Adicionado padding-top para não esconder atrás do header */
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+}
+
+.profile-card h1,
+.details-card h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 1.5rem;
+}
+
+.details-image {
+  width: 100%;
+  max-height: 400px;
+  object-fit: cover;
+  border-radius: 16px;
+  margin-bottom: 1.5rem;
+}
+
+.details-category {
+  display: inline-block;
+  background: var(--primary);
+  color: white;
+  padding: 0.4rem 1rem;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+/* ==========================================================================
+   ESTRUTURA DA PÁGINA DE DETALHES (Botão Alinhado Acima do Card)
+   ========================================================================== */
+.page-details-layout {
+  width: 100% !important;
+  min-height: calc(100vh - 60px) !important;
+  padding: 40px 1rem !important; /* Espaçamento ideal para telas mobile e pc */
+  box-sizing: border-box !important;
+  display: flex !important;
+  justify-content: center !important;
+}
+
+.details-content-box {
+  width: 100% !important;
+  max-width: 750px !important; /* Mesma largura máxima exata do card de conteúdo */
+  margin: 0 auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  gap: 12px !important; /* Espaço simétrico entre o link de voltar e o card */
+}
+
+.details-card {
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Estilo do link de voltar estruturado */
+.back-link {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  color: var(--muted) !important;
+  text-decoration: none !important;
+  font-size: 0.9rem !important;
+  font-weight: 600 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  align-self: flex-start !important;
+  transition: color 0.2s ease !important;
+}
+
+.back-link:hover {
+  color: var(--secondary) !important;
+}
+
+/* ==========================================================================
+   13. MEDIA QUERIES (Ajustes Exclusivos para Desktop - Computador)
+   ========================================================================== */
+@media (min-width: 768px) {
+  body {
+    padding-top: 60px !important;
+    padding-bottom: 0 !important; /* Remove o espaçamento da barra inferior no PC */
+  }
+
+  /* 🌟 CORREÇÃO: O texto passa a existir apenas a partir do computador */
+  .nav-text {
+    display: block !important;
+    font-size: 0.9rem !important;
+    font-weight: 500 !important;
+    white-space: nowrap !important;
+  }
+
+  /* No computador, a logo vai pra esquerda e o menu pra direita dentro do header */
+  .header-content {
+    justify-content: space-between !important;
+    padding: 0 1.5rem !important; /* Margem de segurança nas bordas da tela */
+  }
+
+  .logo h1 {
+    font-size: 1.5rem !important;
+  }
+
+  /* O menu vira uma barra horizontal comum embutida no Header */
+  .nav {
+    position: static !important;
+    width: auto !important;
+    height: auto !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    flex-direction: row !important;
+    gap: 4px !important;
+    padding: 0 !important;
+  }
+
+  .nav-item,
+  .logout-btn {
+    width: auto !important;
+    height: 40px !important;
+    padding: 0 12px !important;
+    border-radius: 8px !important;
+    flex-direction: row !important; /* Ícone ao lado do texto */
+    gap: 6px !important;
+    flex: none !important;
+    color: var(--text) !important;
+  }
+
+  .nav-item svg,
+  .logout-btn svg {
+    font-size: 1rem !important;
+    width: 1rem !important;
+    height: 1rem !important;
+    margin-bottom: 0 !important;
+  }
+
+  .nav-item:hover {
+    background: rgba(255, 255, 255, 0.05) !important;
+    color: var(--primary) !important;
+  }
+
+  .logout-btn:hover {
+    background: rgba(239, 68, 68, 0.1) !important;
+    color: #ef4444 !important;
+  }
+
+  /* Ajustes das seções padrão no PC */
+  .hero-content {
+    grid-template-columns: 1.2fr 0.8fr;
+    align-items: center;
+    gap: 3rem;
+  }
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .stats-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .filter-bar {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+/* Container de segurança para o picker de imagem */
+.camera-container-wrapper {
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* Garante que o formulário respeite o box-sizing globalmente */
+.contact-form {
+  box-sizing: border-box;
 }

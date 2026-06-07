@@ -1,27 +1,48 @@
 import { Link } from "react-router-dom";
+import { useAuth } from "./AuthContext";
 
-function EventCard({ id, title, category, date, location, description, onDelete }) {
+function EventCard({ id, title, category, date, location, description, image, onDelete }) {
+  const { isOrganizador } = useAuth();
+  
+  // Função auxiliar para encurtar a descrição
+  const formatDescription = (text) => 
+    text?.length > 60 ? `${text.substring(0, 60)}...` : (text || "Nenhuma descrição disponível.");
+
   return (
     <div className="event-card">
-      <h3>{title}</h3>
-      <p><strong>Categoria:</strong> {category}</p>
-      <p><strong>Data:</strong> {date}</p>
-      <p><strong>Local:</strong> {location}</p>
-      <p className="event-preview">
-  {description.substring(0, 60)}...
-</p>
+      {/* Imagem usando a classe que já existe no seu CSS */}
+      {image && (
+        <img 
+          src={image} 
+          alt={`Capa do evento ${title}`} 
+          className="event-image" 
+        />
+      )}
 
-      <div className="event-actions">
-        <Link to={`/evento/${id}`}>
-          <button className="btn-detalhes">Ver detalhes</button>
-        </Link>
+      <div className="event-card-content">
+        <h3>{title}</h3>
+        <p style={{ color: "var(--primary)" }}>{category || "Não especificada"}</p>
+        <p>📅 {date}</p>
+        <p>📍 {location}</p>
+        <p className="event-preview">{formatDescription(description)}</p>
 
-        <button 
-          className="btn-excluir"
-          onClick={() => onDelete(id)}
-        >
-          Excluir
-        </button>
+        {/* Botões usando as classes já definidas no seu App.css */}
+        <div className="event-actions">
+          <Link to={`/evento/${id}`} style={{ flex: 1, textDecoration: 'none' }}>
+            <button className="btn-detalhes" style={{ width: '100%' }}>
+              Ver detalhes
+            </button>
+          </Link>
+
+          {isOrganizador && (
+            <button
+              className="btn-excluir"
+              onClick={() => window.confirm(`Excluir "${title}"?`) && onDelete(id)}
+            >
+              Excluir
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );
