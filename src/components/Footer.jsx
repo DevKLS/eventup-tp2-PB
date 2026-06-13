@@ -1,49 +1,70 @@
-import React from "react";
 import { Link } from "react-router-dom";
 import { HashLink } from "react-router-hash-link";
-import { FaBolt, FaCalendarAlt, FaChartBar } from "react-icons/fa";
+import { FaBolt, FaCalendarAlt, FaChartBar, FaEnvelope } from "react-icons/fa";
 
-/**
- * Componente de rodapé. 
- * Exibe links de navegação rápida e créditos do desenvolvedor.
- */
 function Footer() {
   const currentYear = new Date().getFullYear();
 
-  return (
-    <footer className="footer" style={{ backgroundColor: "#0d1117", borderTop: "1px solid #21262d", padding: "30px 0", marginTop: "auto", color: "#8b949e" }}>
-      <div className="container" style={{ display: "flex", flexDirection: "column", gap: "20px", maxWidth: "1200px", margin: "0 auto", padding: "0 20px" }}>
-        
-        {/* Superior: Marca e Links */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "20px" }}>
-          <Link to="/" onClick={() => window.scrollTo(0, 0)} style={{ textDecoration: "none", color: "inherit" }}>
-            <h1 style={{ fontSize: "1.5rem", fontWeight: "800", margin: 0 }}>EventUp</h1>
-          </Link>
+  // Estilo compartilhado para manter a coesão da cor
+  const textStyle = { color: "var(--muted)", fontSize: "0.9rem", lineHeight: "1.6" };
 
-          <div style={{ display: "flex", gap: "20px" }}>
-            <FooterLink to="/#funcionalidades" icon={<FaBolt />} text="Recursos" />
-            <FooterLink to="/#eventos" icon={<FaCalendarAlt />} text="Eventos" />
-            <FooterLink to="/#estatisticas" icon={<FaChartBar />} text="Dados" />
+  return (
+    <footer className="footer" style={{ borderTop: "1px solid var(--border)", paddingTop: "60px", paddingBottom: "30px", marginTop: "auto", backgroundColor: "var(--bg-footer, #0a0a0c)" }}>
+      <div className="container">
+        {/* Grid de Links Principal */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "40px", marginBottom: "40px" }}>
+          
+          {/* Coluna 1: Branding */}
+          <div>
+            <Link to="/" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} style={{ textDecoration: "none" }}>
+              <h2 style={{ fontSize: "1.5rem", fontWeight: "800", margin: "0 0 1rem 0", color: "var(--text)" }}>
+                EventUp
+              </h2>
+            </Link>
+            <p style={textStyle}>
+              Conectando comunidades através da organização simplificada de eventos locais.
+            </p>
+          </div>
+
+          {/* Coluna 2: Navegação */}
+          <div>
+            <h4 style={{ color: "var(--text)", marginBottom: "1.5rem" }}>Plataforma</h4>
+            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+              <FooterLink to="/#funcionalidades" icon={<FaBolt />} text="Recursos" />
+              <FooterLink to="/#eventos" icon={<FaCalendarAlt />} text="Explorar Eventos" />
+              <FooterLink to="/#estatisticas" icon={<FaChartBar />} text="Métricas" />
+            </div>
+          </div>
+
+          {/* Coluna 3: Contato */}
+          <div>
+            <h4 style={{ color: "var(--text)", marginBottom: "1.5rem" }}>Contato</h4>
+            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+              <a href="mailto:contato@eventup.com" style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--muted)", textDecoration: "none", fontSize: "0.9rem" }}>
+                <FaEnvelope /> suporte@eventup.com
+              </a>
+            </div>
           </div>
         </div>
 
-        <div style={{ width: "100%", height: "1px", backgroundColor: "#21262d" }}></div>
-
-        {/* Inferior: Créditos */}
-        <div style={{ display: "flex", justifyContent: "space-between", fontSize: "12px" }}>
-          <p style={{ margin: 0 }}>&copy; {currentYear} EventUp. Direitos reservados.</p>
-          <p style={{ margin: 0 }}>Desenvolvido por <span style={{ color: "#fff", fontWeight: "600" }}>Keila Santana Lima</span></p>
+        {/* Barra Inferior */}
+        <div style={{ borderTop: "1px solid var(--border)", paddingTop: "20px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "10px", fontSize: "0.85rem", color: "var(--muted)" }}>
+          <p style={{ margin: 0 }}>&copy; {currentYear} EventUp. Todos os direitos reservados.</p>
+          <p style={{ margin: 0 }}>
+            Desenvolvido por <span style={{ color: "var(--text)", fontWeight: "600" }}>Keila Santana Lima</span>
+          </p>
         </div>
       </div>
     </footer>
   );
 }
 
-/**
- * Componente auxiliar para padronizar links do rodapé
- */
 const FooterLink = ({ to, icon, text }) => (
-  <HashLink smooth to={to} style={{ color: "#8b949e", textDecoration: "none", fontSize: "14px", display: "flex", alignItems: "center", gap: "5px" }}>
+  <HashLink 
+    smooth to={to} 
+    className="footer-link"
+    style={{ color: "var(--muted)", textDecoration: "none", fontSize: "0.9rem", display: "flex", alignItems: "center", gap: "8px", transition: "all 0.2s" }}
+  >
     {icon} {text}
   </HashLink>
 );

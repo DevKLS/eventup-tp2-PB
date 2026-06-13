@@ -1,6 +1,7 @@
+import React from 'react';
 import { useNavigate, Link } from "react-router-dom";
 import { FaChevronLeft } from "react-icons/fa";
-import { useAuth } from "../components/AuthContext";
+import { useAuth } from "../contexts/AuthContext";
 
 /**
  * Componente de Perfil.

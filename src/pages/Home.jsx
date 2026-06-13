@@ -2,8 +2,8 @@ import { useState, useEffect, useMemo } from "react";
 import Hero from "../components/Hero";
 import SectionTitle from "../components/SectionTitle";
 import EventCard from "../components/EventCard";
-import { useAuth } from "../components/AuthContext";
-import { supabase } from "../supabaseClient"; 
+import { useAuth } from "../contexts/AuthContext";
+import { supabase } from "../services/supabaseClient"; 
 import { categories } from "../data/data";
 
 function HomePage() {

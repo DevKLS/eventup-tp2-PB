@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import React, { useState, useRef } from "react";
 import { Camera, Image as ImageIcon, X } from "lucide-react";
 
 /**

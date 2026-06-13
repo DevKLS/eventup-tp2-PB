@@ -1,23 +1,37 @@
+import React from 'react';
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom"; 
-import { HashLink } from "react-router-hash-link";
-import { useAuth } from "./AuthContext"; 
-import { FaHome, FaBolt, FaCalendarAlt, FaChartBar, FaPlusCircle, FaUser, FaSignOutAlt, FaSignInAlt, FaUserPlus } from "react-icons/fa";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
+import {
+  FaHome,
+  FaChartBar,
+  FaUser,
+  FaSignOutAlt,
+  FaSignInAlt,
+  FaUserPlus,
+  FaClipboardList,
+  FaHeart,
+} from "react-icons/fa";
 
-/**
- * Componente de cabeçalho responsivo com controle de navegação condicional
- * baseado no estado de autenticação e papel do usuário.
- */
 function Header() {
   const [open, setOpen] = useState(false);
   const { isOrganizador, user, logout } = useAuth();
-  const { pathname } = useLocation(); 
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
 
   const closeMenu = () => setOpen(false);
 
   const handleHomeClick = () => {
     closeMenu();
-    if (pathname === "/") window.scrollTo({ top: 0, behavior: "smooth" });
+    if (pathname === "/") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
+  const handleLogout = async () => {
+    await logout();   // Executa a função do contexto
+    closeMenu();      // Fecha o menu hamburguer
+    navigate("/");    // Redireciona para a Home e força a re-renderização
   };
 
   return (
@@ -27,29 +41,83 @@ function Header() {
           <h1>EventUp</h1>
         </Link>
 
-        <button className="menu-toggle" onClick={() => setOpen(!open)} aria-label="Menu">☰</button>
+        <button
+          className="menu-toggle"
+          onClick={() => setOpen(!open)}
+          aria-label="Menu"
+        >
+          ☰
+        </button>
 
         <nav className={`nav ${open ? "nav-open" : ""}`}>
-          <NavLink to="/" icon={<FaHome />} text="Início" onClick={handleHomeClick} />
-          <NavLink to="/#funcionalidades" hash icon={<FaBolt />} text="Recursos" onClick={closeMenu} />
-          <NavLink to="/#eventos" hash icon={<FaCalendarAlt />} text="Eventos" onClick={closeMenu} />
-          <NavLink to="/#estatisticas" hash icon={<FaChartBar />} text="Dados" onClick={closeMenu} />
+          <NavLink
+            to="/"
+            icon={<FaHome />}
+            text="Início"
+            active={pathname === "/"}
+            onClick={handleHomeClick}
+          />
 
-          {isOrganizador && (
-          <NavLink to="/novo-evento" icon={<FaPlusCircle />} text="Novo Evento" onClick={closeMenu} />
+          {user && isOrganizador && (
+            <NavLink
+              to="/dashboard"
+              icon={<FaChartBar />}
+              text="Dashboard"
+              active={pathname === "/dashboard"}
+              onClick={closeMenu}
+            />
+          )}
+
+          {user && (
+            <>
+              <NavLink
+                to="/minhas-inscricoes"
+                icon={<FaClipboardList />}
+                text="Inscrições"
+                active={pathname === "/minhas-inscricoes"}
+                onClick={closeMenu}
+              />
+
+              <NavLink
+                to="/favoritos"
+                icon={<FaHeart />}
+                text="Favoritos"
+                active={pathname === "/favoritos"}
+                onClick={closeMenu}
+              />
+
+              <NavLink
+                to="/perfil"
+                icon={<FaUser />}
+                text="Perfil"
+                active={pathname === "/perfil"}
+                onClick={closeMenu}
+              />
+            </>
           )}
 
           {user ? (
-            <>
-              <NavLink to="/perfil" icon={<FaUser />} text="Perfil" onClick={closeMenu} />
-              <button className="logout-btn" onClick={() => { logout(); closeMenu(); }}>
-                <FaSignOutAlt /> <span className="nav-text">Sair</span>
-              </button>
-            </>
+            <button className="logout-btn" onClick={handleLogout}>
+              <FaSignOutAlt />
+              <span className="nav-text">Sair</span>
+            </button>
           ) : (
             <>
-              <NavLink to="/cadastro" icon={<FaUserPlus />} text="Cadastrar" onClick={closeMenu} />
-              <NavLink to="/login" icon={<FaSignInAlt />} text="Entrar" onClick={closeMenu} />
+              <NavLink
+                to="/cadastro"
+                icon={<FaUserPlus />}
+                text="Cadastrar"
+                active={pathname === "/cadastro"}
+                onClick={closeMenu}
+              />
+
+              <NavLink
+                to="/login"
+                icon={<FaSignInAlt />}
+                text="Entrar"
+                active={pathname === "/login"}
+                onClick={closeMenu}
+              />
             </>
           )}
         </nav>
@@ -58,16 +126,17 @@ function Header() {
   );
 }
 
-/**
- * Componente auxiliar para padronizar links de navegação
- */
-const NavLink = ({ to, hash, icon, text, onClick }) => {
-  const props = { to, className: "nav-item", onClick };
-  return hash ? (
-    <HashLink smooth {...props}>{icon} <span className="nav-text">{text}</span></HashLink>
-  ) : (
-    <Link {...props}>{icon} <span className="nav-text">{text}</span></Link>
+function NavLink({ to, icon, text, active, onClick }) {
+  return (
+    <Link
+      to={to}
+      className={`nav-item ${active ? "active" : ""}`}
+      onClick={onClick}
+    >
+      {icon}
+      <span className="nav-text">{text}</span>
+    </Link>
   );
-};
+}
 
 export default Header;

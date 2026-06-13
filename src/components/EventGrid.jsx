@@ -1,10 +1,7 @@
 import { useState, useEffect } from "react";
 import EventCard from "./EventCard";
+import { supabase } from "../services/supabaseClient"; 
 
-/**
- * Gerencia a listagem, filtragem e remoção de eventos.
- * Implementa padrão de fallback para simulação de dados em caso de falha na API.
- */
 function EventGrid() {
   const [eventos, setEventos] = useState([]);
   const [busca, setBusca] = useState("");
@@ -13,30 +10,48 @@ function EventGrid() {
   const carregarEventos = async () => {
     setCarregando(true);
     try {
-      const resposta = await fetch("https://api.mockaroo.com/api/exemplo-fake-api");
-      const dados = await resposta.json();
-      setEventos(dados);
-    } catch {
-      // Fallback para ambiente de desenvolvimento/demo
+      const { data, error } = await supabase
+        .from("eventos")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+      setEventos(data || []);
+    } catch (err) { // <--- CORRIGIDO: Removida a chave sobressalente que quebrava a sintaxe
+      console.error("Erro ao carregar Supabase, usando fallback local:", err.message);
       setEventos([
-        { id: 1, title: "Workshop de React Native", category: "Tecnologia", date: "12/10/2026", location: "Instituto Infnet", description: "Desenvolvimento front-end avançado.", image: "https://images.unsplash.com/photo-1515187029135-18ee286d815b?auto=format&fit=crop&w=800&q=80" },
-        { id: 2, title: "Festival de Inovação", category: "Inovação", date: "25/11/2026", location: "Online", description: "Tendências de info-produtos.", image: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=800&q=80" },
-        { id: 3, title: "UX/UI Design & Branding", category: "Design", date: "05/12/2026", location: "Auditório", description: "Construção de identidades visuais.", image: "https://images.unsplash.com/photo-1531403009284-440f080d1e12?auto=format&fit=crop&w=800&q=80" }
+        { 
+          id: 1, 
+          title: "Workshop de React Native", 
+          category: "Tecnologia", 
+          date: "2026-10-12", 
+          location: "Instituto Infnet", 
+          description: "Desenvolvimento front-end avançado.",
+          image: "https://images.unsplash.com/photo-1515187029135-18ee286d815b?auto=format&fit=crop&w=800&q=80"
+        }
       ]);
     } finally {
       setCarregando(false);
     }
   };
 
-  useEffect(() => { carregarEventos(); }, []);
+  useEffect(() => { 
+    carregarEventos(); 
+  }, []);
 
-  const handleExcluirEvento = (id) => {
-    setEventos((prev) => prev.filter((ev) => ev.id !== id));
+  const handleExcluirEvento = async (id) => {
+    try {
+      const { error } = await supabase.from("eventos").delete().eq("id", id);
+      if (error) throw error;
+      setEventos((prev) => prev.filter((ev) => ev.id !== id));
+    } catch (err) {
+      alert("Erro ao deletar do banco: " + err.message);
+    }
   };
 
   const eventosFiltrados = eventos.filter((ev) => 
-    ev.title.toLowerCase().includes(busca.toLowerCase()) || 
-    ev.category.toLowerCase().includes(busca.toLowerCase())
+    ev.title?.toLowerCase().includes(busca.toLowerCase()) || 
+    ev.category?.toLowerCase().includes(busca.toLowerCase())
   );
 
   return (
@@ -59,13 +74,15 @@ function EventGrid() {
       {carregando ? (
         <div className="loading">Carregando eventos...</div>
       ) : (
-        <div className="event-grid">
+        <div className="grid event-grid">
           {eventosFiltrados.length > 0 ? (
             eventosFiltrados.map((ev) => (
               <EventCard key={ev.id} {...ev} onDelete={handleExcluirEvento} />
             ))
           ) : (
-            <p className="no-events">Nenhum evento encontrado.</p>
+            <p className="no-events" style={{ color: "var(--muted)", gridColumn: "1 / -1", textAlign: "center", padding: "2rem 0" }}>
+              Nenhum evento encontrado.
+            </p>
           )}
         </div>
       )}

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaArrowLeft, FaUserPlus } from "react-icons/fa";
-import { supabase } from "../supabaseClient";
+import { supabase } from "../services/supabaseClient";
 
 /**
  * Componente de Cadastro de usuários.

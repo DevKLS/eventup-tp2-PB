@@ -3,11 +3,9 @@ import Hero from "../components/Hero";
 import SectionTitle from "../components/SectionTitle";
 import EventCard from "../components/EventCard";
 import EventForm from "../components/EventForm";
-import StatCard from "../components/StatCard";
-import FeatureCard from "../components/FeatureCard";
-import { useAuth } from "../components/AuthContext";
-import { supabase } from "../supabaseClient";
-import { categories, stats, highlights } from "../data/data";
+import { useAuth } from "../contexts/AuthContext";
+import { supabase } from "../services/supabaseClient";
+import { categories } from "../data/data"; // Removidos os dados extras desnecessários
 
 function HomePage() {
   const [selectedCategory, setSelectedCategory] = useState("Todos");
@@ -53,14 +51,10 @@ function HomePage() {
 
   return (
     <>
+      {/* 1. SEÇÃO HERO */}
       <Hero />
-      <section className="section" id="funcionalidades">
-        <div className="container">
-          <SectionTitle title="O que você pode fazer" />
-          <div className="grid">{highlights.map(item => <FeatureCard key={item.id} {...item} />)}</div>
-        </div>
-      </section>
 
+      {/* 2. SEÇÃO DE EVENTOS EM DESTAQUE (Com o filtro por categoria e listagem do Supabase) */}
       <section className="section" id="eventos">
         <div className="container">
           <SectionTitle title="Eventos em destaque" />
@@ -77,12 +71,7 @@ function HomePage() {
         </div>
       </section>
 
-      <section className="section" id="estatisticas">
-        <div className="container">
-          <div className="stats-grid">{stats.map(s => <StatCard key={s.id} {...s} />)}</div>
-        </div>
-      </section>
-
+      {/* 3. SEÇÃO DE CRIAÇÃO DE EVENTOS (Visível apenas para organizadores) */}
       {isOrganizador && (
         <section className="section alt-bg" id="cadastro">
           <div className="container">

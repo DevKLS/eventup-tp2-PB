@@ -1,76 +1,120 @@
-import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { FaChevronLeft, FaGoogle } from "react-icons/fa";
-import { supabase } from "../supabaseClient";
+import React from 'react';
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { supabase } from "../services/supabaseClient";
+import { useAuth } from "../contexts/AuthContext";
+import { FaGoogle, FaSignInAlt } from "react-icons/fa";
 
-/**
- * Componente de Login.
- * Gerencia autenticação via e-mail/senha e integração OAuth (Google).
- */
 function Login() {
   const navigate = useNavigate();
+  const { loginComGoogle, user, loading: authLoading } = useAuth();
   const [formData, setFormData] = useState({ email: "", senha: "" });
-  const [errorMessage, setErrorMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = async (e) => {
+  // Redireciona automaticamente se o usuário já estiver logado (evita mofar na tela de login)
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  }, [user, navigate]);
+
+  // Login manual com e-mail e senha
+  const handleLoginSubmit = async (e) => {
     e.preventDefault();
-    setErrorMessage("");
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email: formData.email.trim().toLowerCase(),
+        password: formData.senha,
+      });
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email: formData.email,
-      password: formData.senha,
-    });
-
-    if (error) setErrorMessage("E-mail ou senha inválidos.");
-    else navigate("/");
+      if (error) throw error;
+      navigate("/");
+    } catch (err) {
+      alert(`Erro ao entrar: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
   };
-
-  const handleGoogleLogin = async () => {
-    const { error } = await supabase.auth.signInWithOAuth({ provider: 'google' });
-    if (error) setErrorMessage(`Erro no login Google: ${error.message}`);
-  };
-
-  const updateField = (field, val) => setFormData(p => ({ ...p, [field]: val }));
 
   return (
-    <div className="auth-container">
-      <div className="auth-card">
-        <Link to="/" className="back-link">
-          <FaChevronLeft size={10} /> Voltar para o Início
-        </Link>
+    <div className="container" style={{ padding: "60px 20px", maxWidth: "500px", margin: "0 auto" }}>
+      <div style={{ backgroundColor: "#161b22", padding: "40px", borderRadius: "12px", border: "1px solid #30363d" }}>
+        
+        <div style={{ textAlign: "center", marginBottom: "30px" }}>
+          <FaSignInAlt style={{ color: "#ff7a00", fontSize: "40px", marginBottom: "10px" }} />
+          <h2 style={{ color: "#fff", margin: 0, fontFamily: "sans-serif" }}>Entrar no EventUp</h2>
+        </div>
 
-        <h1>Login</h1>
-
-        {errorMessage && <div className="error-alert">{errorMessage}</div>}
-
-        <form onSubmit={handleLogin}>
-          <div className="form-group">
-            <label>Email</label>
-            <input type="email" placeholder="Digite seu email" value={formData.email} onChange={(e) => updateField("email", e.target.value)} required />
-          </div>
-          <div className="form-group">
-            <label>Senha</label>
-            <input type="password" placeholder="Digite sua senha" value={formData.senha} onChange={(e) => updateField("senha", e.target.value)} required />
-          </div>
-          <button type="submit" className="btn btn-primary full-width">Entrar</button>
+        {/* Formulário Tradicional */}
+        <form onSubmit={handleLoginSubmit} style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+          <input 
+            type="email" 
+            placeholder="E-mail" 
+            value={formData.email} 
+            onChange={(e) => setFormData({...formData, email: e.target.value})} 
+            required 
+            style={inputStyle} 
+          />
+          <input 
+            type="password" 
+            placeholder="Senha" 
+            value={formData.senha} 
+            onChange={(e) => setFormData({...formData, senha: e.target.value})} 
+            required 
+            style={inputStyle} 
+          />
+          
+          <button type="submit" disabled={loading || authLoading} style={buttonStyle(loading)}>
+            {loading ? "Entrando..." : "Entrar com E-mail"}
+          </button>
         </form>
 
-        <button onClick={handleGoogleLogin} style={googleButtonStyle}>
-          <FaGoogle color="#DB4437" /> Entrar com Google
+        {/* Divisor Visual */}
+        <div style={{ display: "flex", alignItems: "center", margin: "25px 0", color: "#8b949e" }}>
+          <hr style={{ flexGrow: 1, border: "none", height: "1px", backgroundColor: "#30363d" }} />
+          <span style={{ padding: "0 15px", fontSize: "14px", fontFamily: "sans-serif" }}>ou</span>
+          <hr style={{ flexGrow: 1, border: "none", height: "1px", backgroundColor: "#30363d" }} />
+        </div>
+
+        {/* Botão de Login do Google Conectado e Estilizado */}
+        <button 
+          type="button"
+          onClick={loginComGoogle}
+          disabled={loading || authLoading}
+          style={{
+            width: "100%",
+            padding: "14px",
+            backgroundColor: "#ffffff",
+            color: "#0d1117",
+            border: "none",
+            borderRadius: "6px",
+            fontWeight: "bold",
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "12px",
+            fontSize: "15px",
+            fontFamily: "sans-serif",
+            transition: "background-color 0.2s"
+          }}
+          onMouseOver={(e) => e.currentTarget.style.backgroundColor = "#f0f0f0"}
+          onMouseOut={(e) => e.currentTarget.style.backgroundColor = "#ffffff"}
+        >
+          <FaGoogle style={{ color: "#db4437", fontSize: "18px" }} />
+          {authLoading ? "Conectando..." : "Entrar com o Google"}
         </button>
 
-        <p className="auth-footer">
-          Não possui conta? <Link to="/cadastro">Cadastre-se</Link>
+        <p style={{ marginTop: "25px", fontSize: "14px", color: "#8b949e", textAlign: "center", fontFamily: "sans-serif" }}>
+          Não tem uma conta? <Link to="/cadastro" style={{ color: "#ff7a00", textDecoration: "none" }}>Cadastre-se</Link>
         </p>
       </div>
     </div>
   );
 }
 
-const googleButtonStyle = {
-  marginTop: "15px", padding: "10px", backgroundColor: "#fff", border: "1px solid #ccc",
-  borderRadius: "6px", color: "#333", fontWeight: "bold", cursor: "pointer",
-  display: "flex", alignItems: "center", justifyContent: "center", gap: "10px", width: "100%"
-};
+const inputStyle = { padding: "12px", borderRadius: "6px", border: "1px solid #30363d", backgroundColor: "#0d1117", color: "#fff", outline: "none" };
+const buttonStyle = (loading) => ({ padding: "14px", backgroundColor: "#ff7a00", border: "none", borderRadius: "6px", color: "#fff", fontWeight: "bold", cursor: "pointer", fontSize: "15px", opacity: loading ? 0.7 : 1, transition: "opacity 0.2s" });
 
 export default Login;
