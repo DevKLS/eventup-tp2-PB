@@ -4,7 +4,7 @@ import { supabase } from "../services/supabaseClient";
 import { useAuth } from "../contexts/AuthContext";
 import { FaTrashAlt, FaMapMarkerAlt, FaRegCalendarAlt, FaHeart, FaExternalLinkAlt } from "react-icons/fa";
 
-// --- COMPONENTE DE CARD PADRONIZADO ---
+// Exibe as informações de um evento favoritado
 const FavoritoCard = ({ fav, onRemover }) => {
   const evento = fav.eventos;
   const [isHovered, setIsHovered] = useState(false);
@@ -24,6 +24,7 @@ const FavoritoCard = ({ fav, onRemover }) => {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
+      {/* Exibe a imagem do evento ou um ícone padrão caso não exista */}
       {evento.image ? (
         <img src={evento.image} alt={evento.title} style={{ width: "100%", height: "170px", objectFit: "cover", display: "block" }} />
       ) : (
@@ -36,25 +37,31 @@ const FavoritoCard = ({ fav, onRemover }) => {
         <span style={{ color: "var(--secondary)", fontSize: "0.75rem", fontWeight: "700", textTransform: "uppercase", letterSpacing: "1px", display: "block", marginBottom: "8px" }}>
           {evento.category || "Geral"}
         </span>
+
         <h3 style={{ fontSize: "1.35rem", fontWeight: "700", color: "#ffffff", margin: "0 0 15px 0", lineHeight: "1.3" }}>
           {evento.title}
         </h3>
-        
+
         <div style={{ color: "var(--text-soft)", fontSize: "0.9rem", display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
           <FaRegCalendarAlt style={{ color: "var(--muted)" }} /> {evento.date}
         </div>
+
         <div style={{ color: "var(--text-soft)", fontSize: "0.9rem", display: "flex", alignItems: "center", gap: "8px" }}>
           <FaMapMarkerAlt style={{ color: "var(--muted)", flexShrink: 0 }} />
-          <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{evento.location}</span>
+          <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+            {evento.location}
+          </span>
         </div>
       </div>
 
+      {/* Área de ações do card */}
       <div style={{ padding: "1.25rem", borderTop: "1px solid rgba(255,255,255,0.05)", backgroundColor: "rgba(0,0,0,0.1)" }}>
         <Link to={`/evento/${evento.id}`} style={{ display: "block", marginBottom: "10px" }}>
           <button style={{ width: "100%", padding: "10px", borderRadius: "8px", border: "none", background: "var(--primary)", color: "#fff", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: "6px" }}>
             <FaExternalLinkAlt size={12} /> Ver Detalhes
           </button>
         </Link>
+
         <button 
           onClick={() => onRemover(fav.id)}
           style={{ 
@@ -71,32 +78,60 @@ const FavoritoCard = ({ fav, onRemover }) => {
 
 function Favoritos() {
   const { user } = useAuth();
+
+  // Armazena a lista de eventos favoritados pelo usuário
   const [favoritos, setFavoritos] = useState([]);
+
+  // Controla o carregamento inicial da página
   const [loading, setLoading] = useState(true);
 
+  // Busca os favoritos do usuário ao carregar a página
   useEffect(() => {
     async function carregarFavoritos() {
-      if (!user) { setLoading(false); return; }
+      if (!user) {
+        setLoading(false);
+        return;
+      }
+
       try {
         const { data } = await supabase
           .from("favoritos")
           .select("id, evento_id, eventos (id, title, category, date, location, image)")
           .eq("usuario_id", user.id);
-        
+
         setFavoritos((data || []).filter(item => item.eventos !== null));
-      } catch (error) { console.error(error); }
+      } catch (error) {
+        console.error(error);
+      }
+
       setLoading(false);
     }
+
     carregarFavoritos();
   }, [user]);
 
+  // Remove um evento da lista de favoritos
   const handleRemoverFavorito = async (idFavorito) => {
     if (!window.confirm("Remover dos favoritos?")) return;
-    const { error } = await supabase.from("favoritos").delete().eq("id", idFavorito);
-    if (!error) setFavoritos(prev => prev.filter(item => item.id !== idFavorito));
+
+    const { error } = await supabase
+      .from("favoritos")
+      .delete()
+      .eq("id", idFavorito);
+
+    if (!error) {
+      setFavoritos(prev => prev.filter(item => item.id !== idFavorito));
+    }
   };
 
-  if (loading) return <div style={{ textAlign: "center", padding: "80px" }}>Carregando...</div>;
+  // Exibe uma mensagem enquanto os dados são carregados
+  if (loading) {
+    return (
+      <div style={{ textAlign: "center", padding: "80px" }}>
+        Carregando...
+      </div>
+    );
+  }
 
   return (
     <section className="section container" style={{ padding: "40px 0", minHeight: "80vh" }}>
@@ -105,12 +140,26 @@ function Favoritos() {
         <h2>Meus Favoritos</h2>
       </div>
 
+      {/* Exibe os favoritos ou uma mensagem caso não existam */}
       {favoritos.length === 0 ? (
-        <p style={{ textAlign: "center", color: "var(--muted)" }}>Nenhum favorito salvo.</p>
+        <p style={{ textAlign: "center", color: "var(--muted)" }}>
+          Nenhum favorito salvo.
+        </p>
       ) : (
-        <div className="grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "25px" }}>
+        <div
+          className="grid"
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+            gap: "25px"
+          }}
+        >
           {favoritos.map((fav) => (
-            <FavoritoCard key={fav.id} fav={fav} onRemover={handleRemoverFavorito} />
+            <FavoritoCard
+              key={fav.id}
+              fav={fav}
+              onRemover={handleRemoverFavorito}
+            />
           ))}
         </div>
       )}

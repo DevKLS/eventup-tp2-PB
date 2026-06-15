@@ -4,13 +4,15 @@ import { FaChevronLeft } from "react-icons/fa";
 import { useAuth } from "../contexts/AuthContext";
 
 /**
- * Componente de Perfil.
- * Exibe informações básicas do usuário logado e opção de encerramento de sessão.
+ * Página responsável pela exibição das informações
+ * do usuário autenticado na aplicação.
+ * Também disponibiliza a funcionalidade de logout.
  */
 function Perfil() {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
 
+  // Verifica se existe um usuário autenticado
   if (!user) {
     return (
       <div className="auth-container">
@@ -35,10 +37,20 @@ function Perfil() {
           
           <h1>Meu Perfil</h1>
 
-          <ProfileField label="Nome" value={user.user_metadata?.full_name || "Usuário"} />
-          <ProfileField label="Email" value={user.email || ""} />
+          <ProfileField
+            label="Nome"
+            value={user.user_metadata?.full_name || "Usuário"}
+          />
 
-          <button className="btn btn-secondary full-width" onClick={logout}>
+          <ProfileField
+            label="Email"
+            value={user.email || ""}
+          />
+
+          <button
+            className="btn btn-secondary full-width"
+            onClick={logout}
+          >
             Sair da Conta
           </button>
         </div>
@@ -48,12 +60,17 @@ function Perfil() {
 }
 
 /**
- * Componente auxiliar para renderização dos campos do perfil
+ * Componente reutilizável utilizado para exibir
+ * informações do perfil em formato somente leitura.
  */
 const ProfileField = ({ label, value }) => (
   <div className="form-group" style={{ marginBottom: "15px" }}>
     <label>{label}</label>
-    <input type="text" value={value} readOnly />
+    <input
+      type="text"
+      value={value}
+      readOnly
+    />
   </div>
 );
 

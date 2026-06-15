@@ -1,7 +1,7 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 
-// Importação das Páginas
+// Importação das páginas da aplicação
 import HomePage from "../pages/HomePage";
 import Login from "../pages/Login";
 import Cadastro from "../pages/Cadastro";
@@ -12,27 +12,27 @@ import MinhasInscricoes from "../pages/MinhasInscricoes";
 import EditarEvento from "../pages/EditarEvento";
 import Favoritos from "../pages/Favoritos";
 
-// Importação dos Componentes e Proteção
+// Importação dos componentes auxiliares
 import EventForm from "../components/EventForm";
 import ProtectedRoute from "./ProtectedRoute";
 
 function AppRoutes() {
   return (
     <Routes>
-      {/* 🔓 Rotas Públicas: Qualquer pessoa pode acessar */}
+      {/* Rotas de acesso público disponíveis para todos os usuários */}
       <Route path="/" element={<HomePage />} />
       <Route path="/login" element={<Login />} />
       <Route path="/cadastro" element={<Cadastro />} />
       <Route path="/evento/:id" element={<DetalhesEvento />} />
 
-      {/* 🔒 Rotas Protegidas: Exigem que o usuário esteja logado */}
-      <Route 
-        path="/novo-evento" 
+      {/* Rotas que exigem autenticação do usuário */}
+      <Route
+        path="/novo-evento"
         element={
           <ProtectedRoute>
             <EventForm />
           </ProtectedRoute>
-        } 
+        }
       />
 
       <Route
@@ -64,7 +64,7 @@ function AppRoutes() {
 
       <Route
         path="/editar-evento/:id"
-        element={ 
+        element={
           <ProtectedRoute>
             <EditarEvento />
           </ProtectedRoute>

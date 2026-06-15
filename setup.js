@@ -1,14 +1,18 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { supabase } from "../services/supabaseClient";
+import { supabase } from "./src/services/supabaseClient";
 
+/**
+ * Página responsável pela edição de eventos cadastrados.
+ * Os dados são carregados a partir do Supabase e preenchidos
+ * automaticamente no formulário para atualização.
+ */
 function EditarEvento() {
   const { id } = useParams();
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(true);
 
-  // Armazena os dados do evento que serão exibidos e editados no formulário
   const [formData, setFormData] = useState({
     title: "",
     category: "",
@@ -25,7 +29,7 @@ function EditarEvento() {
     carregarEvento();
   }, []);
 
-  // Busca o evento no banco de dados pelo ID recebido na URL
+  // Busca o evento selecionado no banco de dados
   async function carregarEvento() {
     const { data, error } = await supabase
       .from("eventos")
@@ -52,7 +56,7 @@ function EditarEvento() {
     setLoading(false);
   }
 
-  // Atualiza o estado conforme os campos do formulário são alterados
+  // Atualiza os valores do formulário em tempo real
   function handleChange(e) {
     const { name, value } = e.target;
 
@@ -62,7 +66,7 @@ function EditarEvento() {
     }));
   }
 
-  // Envia as alterações para o banco de dados
+  // Salva as alterações realizadas pelo organizador
   async function handleSubmit(e) {
     e.preventDefault();
 
@@ -88,11 +92,10 @@ function EditarEvento() {
 
     alert("Evento atualizado com sucesso!");
 
-    // Redireciona para a página de detalhes do evento após salvar
     navigate(`/evento/${id}`);
   }
 
-  // Exibe uma mensagem enquanto os dados do evento estão sendo carregados
+  // Exibe mensagem enquanto os dados são carregados
   if (loading) {
     return (
       <div className="container">
@@ -177,7 +180,7 @@ function EditarEvento() {
                 onChange={handleChange}
               />
 
-              {/* Exibe uma prévia da imagem quando uma URL estiver preenchida */}
+              {/* Pré-visualização da imagem informada */}
               {formData.image && (
                 <img
                   src={formData.image}
@@ -209,7 +212,6 @@ function EditarEvento() {
               />
             </div>
 
-            {/* Área que contém os botões de ação do formulário */}
             <div className="form-actions">
               <button
                 type="submit"

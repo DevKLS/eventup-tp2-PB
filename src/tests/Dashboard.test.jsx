@@ -1,10 +1,9 @@
-import { render, screen } from './test-utils';
+import React from 'react';
+import { render, screen } from './test-utils'; // Import único e correto
 import { describe, it, expect, vi } from 'vitest';
 import Dashboard from '../pages/Dashboard';
-import { AuthContext } from '../contexts/AuthContext';
-import React from 'react';
 
-// Mock do Supabase mantendo a estrutura que o Dashboard espera
+// Simulação do serviço Supabase
 vi.mock('../services/supabaseClient', () => ({
   supabase: {
     from: () => ({
@@ -13,39 +12,45 @@ vi.mock('../services/supabaseClient', () => ({
           order: () => Promise.resolve({ data: [], error: null })
         })
       })
-    })
+    }),
+    auth: {
+      getSession: () => Promise.resolve({ data: { session: { user: { id: '123' } } }, error: null }),
+      onAuthStateChange: () => ({
+        data: { subscription: { unsubscribe: vi.fn() } }
+      })
+    }
   }
 }));
 
 describe('Dashboard Component', () => {
-  const customRender = () => {
-    return render(
-      <AuthContext.Provider value={{ user: { id: '123' } }}>
-        <Dashboard />
-      </AuthContext.Provider>
-    );
+  // Definimos um usuário mockado para o contexto
+  const providerProps = {
+    user: { id: '123', email: 'admin@eventup.com' }
   };
 
   it('deve carregar e exibir o painel do organizador', async () => {
-    customRender();
-    
-    // O findByText aguarda a resolução do estado de "carregando"
+    render(<Dashboard />, { providerProps });
+
     const title = await screen.findByText(/Painel do Organizador/i);
-    expect(title).toBeInTheDocument;
+    expect(title).toBeInTheDocument(); 
   });
 
   it('deve exibir o botão de criar novo evento', async () => {
-    customRender();
-    
-    const btn = await screen.findByRole('link', { name: /criar novo evento/i });
-    expect(btn).toBeInTheDocument;
+    render(<Dashboard />, { providerProps });
+
+    const btn = await screen.findByRole('link', {
+      name: /criar novo evento/i
+    });
+
+    expect(btn).toBeInTheDocument();
   });
 
   it('deve exibir cards de estatísticas zerados quando não houver eventos', async () => {
-    customRender();
-    
-    // Busca estatísticas específicas que apareceram no seu log anterior
+    render(<Dashboard />, { providerProps });
+
+    // findAllByText retorna uma promise, await é obrigatório
     const stats = await screen.findAllByText(/0/);
+
     expect(stats.length).toBeGreaterThan(0);
   });
 });

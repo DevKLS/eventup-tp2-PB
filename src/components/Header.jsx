@@ -23,15 +23,21 @@ function Header() {
 
   const handleHomeClick = () => {
     closeMenu();
+
     if (pathname === "/") {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
 
+  // Realiza o logout do usuário e retorna para a página inicial
   const handleLogout = async () => {
-    await logout();   // Executa a função do contexto
-    closeMenu();      // Fecha o menu hamburguer
-    navigate("/");    // Redireciona para a Home e força a re-renderização
+    await logout();
+
+    // Fecha o menu de navegação após o logout
+    closeMenu();
+
+    // Redireciona o usuário para a página inicial
+    navigate("/");
   };
 
   return (

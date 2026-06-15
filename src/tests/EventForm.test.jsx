@@ -1,18 +1,34 @@
-import React from 'react'; // <--- ADICIONE ESTA LINHA
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { vi, it, expect } from 'vitest';
+import React from 'react';
+import { render, screen } from './test-utils'; // Import único e correto
+import userEvent from '@testing-library/user-event'; // Adicionado import necessário
+import { describe, it, expect } from 'vitest';
 import EventForm from '../components/EventForm';
 
-it('deve chamar a função de envio ao clicar no botão', async () => {
-  const user = userEvent.setup(); 
-  const handleSubmit = vi.fn();
-  
-  render(<EventForm onSubmit={handleSubmit} />);
-  
-  await user.type(screen.getByPlaceholderText(/título/i), 'Evento Teste');
-  const button = screen.getByRole('button', { name: /salvar/i });
-  await user.click(button);
-  
-  expect(handleSubmit).toHaveBeenCalled();
+describe('EventForm', () => {
+  it('deve submeter o formulário corretamente', async () => {
+    // Configura o userEvent para simular interações do usuário
+    const user = userEvent.setup();
+    
+    // Dados de mock para passar na validação de administrador do componente
+    const providerProps = {
+      user: { id: '123', email: 'admin@eventup.com' }
+    };
+
+    render(<EventForm />, { providerProps });
+
+    // Preenchimento dos campos utilizando os labels (acessibilidade)
+    await user.type(screen.getByLabelText(/título do evento/i), 'Workshop de Testes');
+    await user.type(screen.getByLabelText(/descrição do evento/i), 'Descrição válida');
+    await user.selectOptions(screen.getByLabelText(/categoria/i), 'Workshop');
+    await user.type(screen.getByLabelText(/data de realização/i), '2026-12-31');
+    await user.type(screen.getByLabelText(/cep/i), '12345-678');
+    await user.type(screen.getByLabelText(/localização completa/i), 'Rua Exemplo, 123');
+
+    // Submissão do formulário
+    await user.click(screen.getByRole('button', { name: /salvar evento/i }));
+
+    // Verificação de que o estado de "Salvando..." foi disparado
+    const mensagem = await screen.findByText(/salvando/i);
+    expect(mensagem).toBeInTheDocument();
+  });
 });

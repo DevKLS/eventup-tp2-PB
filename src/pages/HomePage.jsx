@@ -5,14 +5,14 @@ import EventCard from "../components/EventCard";
 import EventForm from "../components/EventForm";
 import { useAuth } from "../contexts/AuthContext";
 import { supabase } from "../services/supabaseClient";
-import { categories } from "../data/data"; // Removidos os dados extras desnecessários
+import { categories } from "../data/data"; // Lista de categorias disponíveis para filtragem
 
 function HomePage() {
   const [selectedCategory, setSelectedCategory] = useState("Todos");
   const { isOrganizador } = useAuth();
   const [events, setEvents] = useState([]);
 
-  // Função centralizada para buscar eventos
+  // Responsável por carregar os eventos cadastrados no banco de dados
   async function fetchEventos() {
     const { data, error } = await supabase
       .from('eventos')
@@ -26,17 +26,19 @@ function HomePage() {
     }
   }
 
-  // Busca inicial
+  // Executa a busca inicial dos eventos ao abrir a página
   useEffect(() => {
     fetchEventos();
   }, []);
 
+  // Filtra os eventos de acordo com a categoria selecionada
   const filteredEvents = useMemo(() => {
     return selectedCategory === "Todos" 
       ? events 
       : events.filter(e => e.category === selectedCategory);
   }, [selectedCategory, events]);
 
+  // Remove um evento do banco de dados e atualiza a interface
   const deleteEvent = async (id) => {
     if (window.confirm("Excluir este evento?")) {
       const { error } = await supabase
@@ -51,32 +53,46 @@ function HomePage() {
 
   return (
     <>
-      {/* 1. SEÇÃO HERO */}
+      {/* Seção principal de apresentação da plataforma */}
       <Hero />
 
-      {/* 2. SEÇÃO DE EVENTOS EM DESTAQUE (Com o filtro por categoria e listagem do Supabase) */}
+      {/* Área de exibição dos eventos com filtro por categoria */}
       <section className="section" id="eventos">
         <div className="container">
           <SectionTitle title="Eventos em destaque" />
+
           <div className="filter-bar">
-            <select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}>
-              {categories.map(c => <option key={c} value={c}>{c}</option>)}
+            <select
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+            >
+              {categories.map(c => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
             </select>
           </div>
+
           <div className="grid">
             {filteredEvents.map(ev => (
-              <EventCard key={ev.id} {...ev} onDelete={() => deleteEvent(ev.id)} />
+              <EventCard
+                key={ev.id}
+                {...ev}
+                onDelete={() => deleteEvent(ev.id)}
+              />
             ))}
           </div>
         </div>
       </section>
 
-      {/* 3. SEÇÃO DE CRIAÇÃO DE EVENTOS (Visível apenas para organizadores) */}
+      {/* Formulário disponível apenas para usuários organizadores */}
       {isOrganizador && (
         <section className="section alt-bg" id="cadastro">
           <div className="container">
             <SectionTitle title="Criar novo evento" />
-            {/* Passamos a função fetchEventos para o formulário */}
+
+            {/* Após criar um evento, atualiza automaticamente a lista */}
             <EventForm onEventoAdicionado={fetchEventos} />
           </div>
         </section>
